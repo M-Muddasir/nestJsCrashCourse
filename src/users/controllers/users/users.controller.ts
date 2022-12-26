@@ -1,5 +1,10 @@
 import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
-import { Param, Query } from '@nestjs/common/decorators';
+import { Param, Query, UsePipes } from '@nestjs/common/decorators';
+import {
+  ParseBoolPipe,
+  ParseIntPipe,
+  ValidationPipe,
+} from '@nestjs/common/pipes';
 import { Request, Response } from 'express';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
 
@@ -62,16 +67,16 @@ export class UsersController {
   //Simple Parameter i.e users/23
   @Get('getUserBySingleId/:id')
   //   getUserById(@Req() request: Request, @Res() response: Response) {
-  getUserBySingleId(@Param('id') id: string) {
-    console.log(id);
+  getUserBySingleId(@Param('id', ParseIntPipe) id: number) {
+    console.log(typeof id);
     return { id: id };
   }
 
   //Query Parameter
   @Get('byQueryParameter')
-  getUserByQueryParameter(@Query('sortBy') sortBy: string) {
-    console.log(sortBy);
-    return [{ name: 'Muddasir' }];
+  getUserByQueryParameter(@Query('sortAsc', ParseBoolPipe) sortAsc: boolean) {
+    console.log(sortAsc);
+    return [{ name: 'Muddasir', pa: sortAsc }];
   }
 
   //With Single Parameter
@@ -90,6 +95,7 @@ export class UsersController {
   //     console.log(request.body);
   //     response.send('Created here');
   //   }
+  @UsePipes(new ValidationPipe())
   createUser(@Body() userData: CreateUserDto) {
     console.log(userData);
     return {};
