@@ -7,13 +7,16 @@ import {
 } from '@nestjs/common/pipes';
 import { Request, Response } from 'express';
 import { CreateUserDto } from 'src/users/dtos/CreateUser.dto';
+import { UsersService } from 'src/users/services/users/users.service';
 
 @Controller('users')
 export class UsersController {
+  constructor(private userService: UsersService) {}
   //Get Request
   @Get()
   getUser() {
-    return { username: 'Muddasir', email: 'chmudasirbwn775@gmail.com' };
+    console.log("Hello");
+    return this.userService.fetchUsers();
   }
 
   @Get('posts')
